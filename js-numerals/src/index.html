@@ -1,6 +1,40 @@
 <!DOCTYPE html>
 <html>
+	<head>
+		<title>js-numerals David Nagy assessment</title>
+		<meta charset="UTF-8"> 
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+		<script src="./js-numeral.js" type="application/javascript"></script>
+		<script>
+			function submitClicked() {
+				console.log('submitClicked');
+				const num = document.getElementById('user-number').value;
+				doTheConversion(num);
+			}
+
+			function doTheConversion(val) {
+				try {
+					console.log('doTheConversion', val);
+					document.getElementById('result').innerText = convertNumeralToText(val);
+				} catch (e) {
+					console.log('doTheConversion', 'error', e);
+					document.getElementById('result').innerText = e.message;
+				}
+			}
+		</script>
+	</head>
 	<body>
-		<p>Hello</p>
+		<div class="container">
+			<div class="card mt-5">
+				<div class="card-body">
+					<h5 class="card-title">Convert numbers to numerals</h5>
+					<div class="form-inline mt-3 mb-3">
+						<input id="user-number" type="text" class="form-control mr-3" placeholder="Type a number here...">
+						<button type="button" class="btn btn-primary" onclick="submitClicked()">Submit</button>
+					</div>
+					<p id="result">The numeral will appear here...</p>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>
