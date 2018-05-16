@@ -13,9 +13,16 @@ function convertNumeralToText(numeral) {
     /* 99 -> infinity */
     if (number > 99) {
       const magnitudeIndex = orders.findIndex((order, ind) => {
-        if (ind <= orderIndex) return false;    // we start 'testing' only the orders of magnitude from the intended index
-        div = Math.floor(number / order);
-        return div > 0;                         // div > 0 -> we found the greatest order of magnitude that fits for the numeric value
+        if (ind <= orderIndex) return false;      // we start 'testing' only the orders of magnitude from the intended index
+        div = Math.floor(number / order);         // div > 0 -> we found the greatest order of magnitude that fits for the numeric value
+        if (div > 0) {
+          if (div < 10 && number > 1099 && number < 2000) {  // exceptional: American English Numerals -> 1100 ~ eleven hudnred, 1900 ~ nineteen hundred 
+            return false;
+          }
+          return true;
+        } else {
+          return false;
+        }                   
       });
 
       mod = number % orders[magnitudeIndex];
@@ -24,7 +31,7 @@ function convertNumeralToText(numeral) {
       result.push(magnitude);
       if (mod > 0) {
         if (mod < 100) {
-          result.push('and');                 // exceptional: hundreds are connected to teens and ones with 'and'
+          result.push('and');                 // exceptional: the big ones are connected to teens and ones with 'and'
         }
         result.push(parseInt(mod));           // only parse the right tree if there is something (mod > 0), otherwise we'd end up with 'zero'
       }
