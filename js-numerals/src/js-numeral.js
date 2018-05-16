@@ -10,6 +10,13 @@ function convertNumeralToText(numeral) {
     const result = [];
     let div, mod;
 
+    /* negative -> 0 */
+    if (number < 0) {
+      result.push('minus');
+      result.push(parseInt(-number, orderIndex));
+      return result.join(' ');
+    }
+
     /* 99 -> infinity */
     if (number > 99) {
       const magnitudeIndex = orders.findIndex((order, ind) => {
@@ -61,5 +68,11 @@ function convertNumeralToText(numeral) {
     }
   }
 
-  return parseInt(numeral);
+  /* sanity check */
+  const number = Number.parseInt(numeral);
+  if (Number.isNaN(number) || !Number.isFinite(number)) {
+    throw new Error('This is not a number!');
+  }
+
+  return parseInt(number);
 }

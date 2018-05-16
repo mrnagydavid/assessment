@@ -66,3 +66,36 @@ QUnit.test('DiNa test cases', (assert) => {
   ];
   dictTest(test, assert);
 });
+
+QUnit.test('Handle negatives', (assert) => {
+  const test = [
+    -7,      'minus seven',
+    -42,     'minus forty-two',
+    -2001,   'minus two thousand and one',
+    -1999,   'minus nineteen hundred and ninety-nine',
+    -17999,  'minus seventeen thousand nine hundred and ninety-nine'
+  ];
+  dictTest(test, assert);
+});
+
+QUnit.test('Convert text to number', (assert) => {
+  const test = [
+    '7',  'seven'
+  ];
+  dictTest(test, assert);
+});
+
+QUnit.test('Convert float to integer', (assert) => {
+  const test = [
+    7.6,  'seven'
+  ];
+  dictTest(test, assert);
+});
+
+QUnit.test('Throw error for malformed input', (assert) => {
+  assert.throws(() => convertNumeralToText('x'));         // non numeric text
+  assert.throws(() => convertNumeralToText({}));          // non numeric text
+  assert.throws(() => convertNumeralToText(Number.NaN));  // NaN
+  assert.throws(() => convertNumeralToText(Number.NEGATIVE_INFINITY));  // Infinity
+  assert.throws(() => convertNumeralToText(Number.POSITIVE_INFINITY));  // Infinity
+});
