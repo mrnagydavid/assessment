@@ -16,7 +16,12 @@ class TodoHandler {
     this.filename = filename;
     const buffer = fs.readFileSync(filename, 'utf8');
     this.rawTodos = JSON.parse(buffer);
-    this.todos = this.rawTodos.map((raw) => new Todo(raw));
+    this.todos = this.rawTodos
+                  .filter((raw) => !raw.done)
+                  .map((raw) => new Todo(raw));
+    if (this.rawTodos.length !== this.todos.length) {
+      this.save(this.todos);
+    }
     this.setup();
   }
 
@@ -123,6 +128,11 @@ class TodoHandler {
     .catch((err) => {
       console.error(err);
     });
+
+    if (updatedTodo.done) {
+      console.log('TodoHandler', 'update', 'setting timer for done todo removal');
+      setTimeout(() => this.remove(updatedTodo.id), 5*60*1000);
+    }
 
     return updatedTodo;
   }
