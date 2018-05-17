@@ -66,10 +66,12 @@ describe('POST todos', () => {
               return todo;
             })
             .then((todo) => {
-              const file = fs.readFileSync(env.filename);
-              const json = JSON.parse(file);
-              expect(json.length).toEqual(2);
-              expect(json[1]).toEqual(todo);
+              return delay(100).then(() => {
+                const file = fs.readFileSync(env.filename);
+                const json = JSON.parse(file);
+                expect(json.length).toEqual(2);
+                expect(json[1]).toEqual(todo);
+              });
             });
   });
 });
@@ -109,7 +111,6 @@ describe('GET todos/:id', () => {
             });
   });
 });
-
 
 describe('PUT todos/:id', () => {
   let app;
@@ -151,10 +152,71 @@ describe('PUT todos/:id', () => {
               return todo;
             })
             .then((todo) => {
-              const file = fs.readFileSync(env.filename);
-              const json = JSON.parse(file);
-              expect(json.length).toEqual(2);
-              expect(json[1]).toEqual(todo);
+              return delay(100).then(() => {
+                const file = fs.readFileSync(env.filename);
+                const json = JSON.parse(file);
+                expect(json.length).toEqual(2);
+                expect(json[1]).toEqual(todo);
+              });
             });
   });
 });
+
+describe('DEL todos/:id', () => {
+  let app;
+  let data;
+  beforeAll(() => {
+    data = [
+      {
+        "id": 1,
+        "text": "Test",
+        "priority": 1,
+        "done": false
+      },
+      {
+        "id": 10,
+        "text": "Osteron",
+        "priority": 2,
+        "done": false
+      },
+      {
+        "id": 20,
+        "text": "Hooray",
+        "priority": 3,
+        "done": false
+      }
+    ];
+    fs.writeFileSync(env.filename, JSON.stringify(data));
+    app = server(express());
+  });
+
+
+  test('delete a todo', () => {
+    const del = data[1];
+    const test = [data[0], data[2]];
+
+    return request(app)
+            .del(`/todos/${del.id}`)
+            .then(response => {
+              const todo = response.body;
+              expect(todo).toEqual(del);
+            })
+            .then((todo) => {
+              return delay(100).then(() => {
+                const file = fs.readFileSync(env.filename);
+                const json = JSON.parse(file);
+                expect(json.length).toEqual(test.length);
+                json.forEach((raw, ind) => {
+                  expect(raw).toEqual(test[ind]);
+                })
+              });
+            });
+  });
+});
+
+function delay(ms) {
+  // to wait for async filewrites going on in the server... :(
+  return new Promise((resolve) => {
+    setTimeout(resolve(), ms);
+  });
+}

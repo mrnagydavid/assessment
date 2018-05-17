@@ -46,6 +46,11 @@ class TodoHandler {
     return this.save(data);
   }
 
+  saveWithout(deleteTodo) {
+    console.log('TodoHandler', 'saveWithout', deleteTodo);
+    return this.save(this.todos.filter((todo) => todo.id !== deleteTodo.id));
+  }
+
   save(data) {
     console.log('TodoHandler', 'save', data);
     return new Promise((resolve, reject) => {
@@ -81,8 +86,8 @@ class TodoHandler {
     console.log(newTodo);
 
     this.saveAppend(newTodo)
-    .then(() => {
-      this.todos.push(newTodo);
+    .then((newTodos) => {
+      this.todos = newTodos;
     })
     .catch((err) => {
       console.error(err);
@@ -122,7 +127,28 @@ class TodoHandler {
     return updatedTodo;
   }
 
-  remove(todoId) {}
+  remove(todoId) {
+    console.log('TodoHandler', 'remove', todoId);
+    const id = Number.parseInt(todoId);
+
+    if (Number.isNaN(id)) {
+      return {};
+    }
+
+    const todo = this.todos.find((todo) => todo.id === id);
+    if (todo === undefined) {
+      return {};
+    }
+
+    this.saveWithout(todo)
+    .then((newTodos) => {
+      this.todos = newTodos;
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    return todo;
+  }
 }
 
 export default TodoHandler;

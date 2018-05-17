@@ -35,7 +35,10 @@ function routerTodo() {
   });
 
   router.delete('/:id', (req, res) => {
-    res.send('Success!');
+    const id = req.params['id'];
+    console.log('router-todo', 'DELETE /:id', id);
+    const deletedTodo = todoHandler.remove(id);
+    res.json(deletedTodo);
   });
   
   return router;
