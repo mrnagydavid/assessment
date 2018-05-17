@@ -44,6 +44,16 @@ class TodoHandler {
     return this.todos;
   }
 
+  get(todoId) {
+    console.log('TodoHandler', 'get', todoId, this.todos);
+    const id = Number.parseInt(todoId);
+    if (Number.isNaN(id)) {
+      return {};
+    }
+    const todo = this.todos.find((todo) => todo.id === id);
+    return todo || {};
+  }
+
   add(todo) {
     console.log('TodoHandler', 'add', todo);
     const newTodo = {

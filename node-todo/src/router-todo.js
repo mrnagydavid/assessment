@@ -20,7 +20,10 @@ function routerTodo() {
   });
 
   router.get('/:id', (req, res) => {
-    res.send('Success!');
+    const id = req.params['id'];
+    console.log('router-todo', 'GET /:id', id);
+    const todo = todoHandler.get(id);
+    res.json(todo);
   });
 
   router.put('/:id', (req, res) => {
