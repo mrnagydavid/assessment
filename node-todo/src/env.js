@@ -1,12 +1,15 @@
 const configuration = {
   'test': {
-    name: 'test'
+    name: 'test',
+    filename: 'src/db/todos-test.json'
   },
   'dev': {
-    name: 'dev'
+    name: 'dev',
+    filename: 'src/db/todos-dev.json'
   },
   'prod': {
-    name: 'prod'
+    name: 'prod',
+    filename: 'db/todos-prod.json'
   }
 };
 
