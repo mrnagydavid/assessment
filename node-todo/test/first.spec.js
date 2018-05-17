@@ -63,6 +63,13 @@ describe('POST todos', () => {
               expect(todo.text).toEqual(test.text);
               expect(todo.priority).toEqual(test.priority);
               expect(todo.done).toEqual(test.done);
+              return todo;
+            })
+            .then((todo) => {
+              const file = fs.readFileSync(env.filename);
+              const json = JSON.parse(file);
+              expect(json.length).toEqual(2);
+              expect(json[1]).toEqual(todo);
             });
   });
 });
@@ -141,6 +148,13 @@ describe('PUT todos/:id', () => {
               expect(todo.text).toEqual(test.text);
               expect(todo.priority).toEqual(test.priority);
               expect(todo.done).toEqual(test.done);
+              return todo;
+            })
+            .then((todo) => {
+              const file = fs.readFileSync(env.filename);
+              const json = JSON.parse(file);
+              expect(json.length).toEqual(2);
+              expect(json[1]).toEqual(todo);
             });
   });
 });

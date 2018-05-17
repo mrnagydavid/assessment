@@ -29,11 +29,13 @@ class TodoHandler {
     });
   }
 
-  append(newTodo) {
+  saveAppend(newTodo) {
+    console.log('TodoHandler', 'saveAppend', newTodo);
     return this.save([...this.todos, newTodo]);
   }
 
   saveUpdate(id, updatedTodo) {
+    console.log('TodoHandler', 'saveUpdate', id, updatedTodo);
     const data = this.todos.map((todo) => {
       if (todo.id === id) {
         return updatedTodo;
@@ -45,6 +47,7 @@ class TodoHandler {
   }
 
   save(data) {
+    console.log('TodoHandler', 'save', data);
     return new Promise((resolve, reject) => {
       fs.writeFile(this.filename, JSON.stringify(data), (err) => {
         if (err) {
@@ -73,15 +76,11 @@ class TodoHandler {
 
   add(todo) {
     console.log('TodoHandler', 'add', todo);
-    const newTodo = {
-      'id':       ++this.maxId,
-      'text':     (typeof todo.text === 'string') ? todo.text : '',
-      'priority': (todo.priority >= 1 && todo.priority <= 5) ? todo.priority : 1,
-      'done':     (todo.done === true) ? true : false
-    };
-    const addedTodo = new Todo(newTodo);
+    todo.id = ++this.maxId;
+    const newTodo = new Todo(todo);
+    console.log(newTodo);
 
-    this.append(newTodo)
+    this.saveAppend(newTodo)
     .then(() => {
       this.todos.push(newTodo);
     })
@@ -112,7 +111,7 @@ class TodoHandler {
       updatedTodo[key] = newTodo[key];
     }
     
-    this.saveUpdate(todoId, updatedTodo)
+    this.saveUpdate(id, updatedTodo)
     .then((newTodos) => {
       this.todos = newTodos;
     })
