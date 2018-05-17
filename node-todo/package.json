@@ -1,0 +1,25 @@
+{
+  "name": "todo",
+  "version": "1.0.0",
+  "description": "Nagy David DiNa assessment task",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=dev babel-node src/index.js",
+    "test": "cross-env NODE_ENV=test jest --config test/jest.conf.js",
+    "build": "babel src -d dist"
+  },
+  "author": "mrnagydavid",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cross-env": "^5.1.5",
+    "express": "^4.16.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "jest": "^22.4.3",
+    "superagent": "^3.8.3",
+    "supertest": "^3.1.0"
+  }
+}
