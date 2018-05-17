@@ -1,3 +1,4 @@
-import app from './app.js';
+import express from 'express';
+import server from './app';
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'));
+server(express()).listen(3000, () => console.log('Example app listening on port 3000!'));

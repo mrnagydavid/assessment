@@ -4,7 +4,7 @@
   "description": "Nagy David DiNa assessment task",
   "main": "src/index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=dev babel-node index.js",
+    "start": "cross-env NODE_ENV=dev babel-node src/index.js",
     "test": "cross-env NODE_ENV=test jest --config test/jest.conf.js",
     "build": "babel src -d dist"
   },
