@@ -102,3 +102,45 @@ describe('GET todos/:id', () => {
             });
   });
 });
+
+
+describe('PUT todos/:id', () => {
+  let app;
+  let data;
+  beforeAll(() => {
+    data = [
+      {
+        "id": 1,
+        "text": "Test",
+        "priority": 1,
+        "done": false
+      },
+      {
+        "id": 10,
+        "text": "Osteron",
+        "priority": 2,
+        "done": false
+      }
+    ];
+    fs.writeFileSync(env.filename, JSON.stringify(data));
+    app = server(express());
+  });
+
+
+  test('update a todo', () => {
+    const test = {...data[1]};
+    test.text = 'Hooray';
+    test.priority = 3;
+
+    return request(app)
+            .put(`/todos/${test.id}`)
+            .send(test)
+            .then(response => {
+              const todo = response.body;
+              expect(todo.id).toEqual(test.id);
+              expect(todo.text).toEqual(test.text);
+              expect(todo.priority).toEqual(test.priority);
+              expect(todo.done).toEqual(test.done);
+            });
+  });
+});

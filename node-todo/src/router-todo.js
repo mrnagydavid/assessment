@@ -27,7 +27,11 @@ function routerTodo() {
   });
 
   router.put('/:id', (req, res) => {
-    res.send('Success!');
+    const id = req.params['id'];
+    const newTodo = req.body;
+    console.log('router-todo', 'PUT /:id', id, newTodo);
+    const updatedTodo = todoHandler.update(id, newTodo);
+    res.json(updatedTodo);
   });
 
   router.delete('/:id', (req, res) => {

@@ -1,4 +1,5 @@
 import fs from 'fs';
+import Todo from './todo';
 
 class TodoHandler {
   /*
@@ -14,7 +15,8 @@ class TodoHandler {
     }
     this.filename = filename;
     const buffer = fs.readFileSync(filename, 'utf8');
-    this.todos = JSON.parse(buffer);
+    this.rawTodos = JSON.parse(buffer);
+    this.todos = this.rawTodos.map((raw) => new Todo(raw));
     this.setup();
   }
 
@@ -27,13 +29,28 @@ class TodoHandler {
     });
   }
 
-  save(newTodo) {
+  append(newTodo) {
+    return this.save([...this.todos, newTodo]);
+  }
+
+  saveUpdate(id, updatedTodo) {
+    const data = this.todos.map((todo) => {
+      if (todo.id === id) {
+        return updatedTodo;
+      } else {
+        return todo;
+      }
+    });
+    return this.save(data);
+  }
+
+  save(data) {
     return new Promise((resolve, reject) => {
-      fs.writeFile(this.filename, JSON.stringify([...this.todos, newTodo]), (err) => {
+      fs.writeFile(this.filename, JSON.stringify(data), (err) => {
         if (err) {
           reject(err);
         } else {
-          resolve();
+          resolve(data);
         }
       });
     });
@@ -62,8 +79,9 @@ class TodoHandler {
       'priority': (todo.priority >= 1 && todo.priority <= 5) ? todo.priority : 1,
       'done':     (todo.done === true) ? true : false
     };
+    const addedTodo = new Todo(newTodo);
 
-    this.save(newTodo)
+    this.append(newTodo)
     .then(() => {
       this.todos.push(newTodo);
     })
@@ -74,7 +92,37 @@ class TodoHandler {
     return newTodo;
   }
 
-  update(todoId, todo) {}
+  update(todoId, newTodo) {
+    console.log('TodoHandler', 'update', todoId, newTodo);
+    const id = Number.parseInt(todoId);
+
+    if (Number.isNaN(id)) {
+      return {};
+    }
+
+    const todo = this.get(todoId);
+    if (!todo.id) {
+      // Didn't find the todo
+      // Fail silently :(
+      return {};
+    }
+
+    const updatedTodo = new Todo(todo.toJSON());
+    for (let key in newTodo) {
+      updatedTodo[key] = newTodo[key];
+    }
+    
+    this.saveUpdate(todoId, updatedTodo)
+    .then((newTodos) => {
+      this.todos = newTodos;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+
+    return updatedTodo;
+  }
+
   remove(todoId) {}
 }
 
