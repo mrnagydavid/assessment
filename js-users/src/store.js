@@ -2,7 +2,9 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import http from 'axios';
 
-const BACKEND_URL = 'http://js-assessment-backend.herokuapp.com/users.json';
+const BACKEND_BASE_URL = 'http://js-assessment-backend.herokuapp.com';
+const BACKEND_USERS_URL = `${BACKEND_BASE_URL}/users.json`;
+const BACKEND_USER_URL = (id) => `${BACKEND_BASE_URL}/users/${id}.json`;
 
 Vue.use(Vuex);
 
@@ -33,12 +35,22 @@ export default new Vuex.Store({
                 return;
             }
             Vue.set(state.users, index, payload);
+        },
+        appendUser(state, payload) {
+            console.log('store', 'mutations', 'appendUser', payload);
+            const oldLen = state.users.length;
+            if (!payload) {
+                console.error('store', 'mutations', 'appendUser', 'No payload!');
+                return;
+            }
+            state.users.push(payload);
+            console.log('store', 'mutations', 'appendUser', oldLen, '->', state.users.length)
         }
     },
     actions: {
         init(context) {
             console.log('store', 'actions', 'init');
-            http.get(BACKEND_URL)
+            http.get(BACKEND_USERS_URL)
             .then((response) => {
                 const json = response.data;
                 if (!json) {
@@ -67,6 +79,23 @@ export default new Vuex.Store({
             } else {
                 console.log('store', 'actions', 'updateLockedStatus', `Couldn't find user #${id}`);
             }
+        },
+        addNewUser(context, payload) {
+            console.log('store', 'actions', 'addNewUser', payload);
+            if (!payload || !payload.first_name || !payload.last_name) {
+                console.log('store', 'actions', 'addNewUser', 'Missing fields in payload');
+                return;
+            }
+            const newUser = { ...payload };
+            newUser.status = 'active';
+
+            return http.post(BACKEND_USERS_URL, newUser)
+            .then((response) => {
+                const addedUser = response.data;
+                addedUser.url = BACKEND_USER_URL(addedUser.id);
+                context.commit('appendUser', addedUser);
+            })
+            .catch((err) => console.error('store', 'actions', 'addNewUser', 'catch', err));
         }
     }
 });
