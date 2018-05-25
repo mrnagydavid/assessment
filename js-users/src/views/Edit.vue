@@ -1,6 +1,6 @@
 <template>
   <div class="new">
-    <EditUser :edit="true" :user="user"></EditUser>
+    <EditUser :edit="true" :user="user" v-if="user"></EditUser>
   </div>
 </template>
 
@@ -22,12 +22,17 @@ export default {
             console.error('Edit', 'computed', 'user', 'No id in props');
             return {};
         }
-        const u = this.users.find((user) => user.id === id);
-        if (!u) {
-            console.error('Edit', 'computed', 'user', `User was not found with this id #${id}`);
-            return {};
+        if (this.users.length > 0) {
+            const u = this.users.find((user) => user.id === id);
+            if (!u) {
+                console.error('Edit', 'computed', 'user', `User was not found with this id #${id}`);
+                return {};
+            }
+            return u;
+        } else {
+            console.log('Edit', 'computed', 'user', 'Loading users...');
+            return false;
         }
-        return u;
     }
   }
 };

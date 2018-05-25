@@ -97,7 +97,7 @@ export default new Vuex.Store({
             console.log('store', 'actions', 'addNewUser', payload);
             if (!payload || !payload.first_name || !payload.last_name) {
                 console.log('store', 'actions', 'addNewUser', 'Missing fields in payload');
-                return;
+                return Promise.reject('Missing fields in user!');
             }
             const newUser = { ...payload };
             newUser.status = 'active';
@@ -114,7 +114,7 @@ export default new Vuex.Store({
             console.log('store', 'actions', 'updateUser', payload);
             if (!payload || !payload.first_name || !payload.last_name) {
                 console.log('store', 'actions', 'updateUser', 'Missing fields in payload');
-                return;
+                return Promise.reject('Missing fields in user!');
             }
             const newUser = {
                 first_name: payload.first_name,

@@ -68,7 +68,7 @@ export default {
             })
             .catch((err) => {
                 this.errorStatus = true;
-                this.errorMsg = err.message;
+                this.errorMsg = err.toString();
             });
         },
         cancelUser() {
