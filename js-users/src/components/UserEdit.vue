@@ -44,30 +44,36 @@ export default {
             errorMsg: ''
         }
     },
-    props: ['edit'],
+    props: ['edit', 'user'],
     methods: {
         saveUser() {
             console.log('UserEdit', 'saveUser', this.editedUser);
+            const newUser = {
+                first_name: this.editedUser.firstName,
+                last_name:  this.editedUser.lastName
+            };
+            let dispatchAction;
             if (this.edit) {
-                console.log('not implemented yet');
+                dispatchAction = 'updateUser';
+                newUser.id = this.user.id;
+                newUser.url = this.user.url;
+                newUser.status = this.user.status;
             } else {
-                const newUser = {
-                    first_name: this.editedUser.firstName,
-                    last_name:  this.editedUser.lastName
-                }
-                const res = this.$store.dispatch('addNewUser', newUser)
-                .then(() => {
-                    console.log('UserEdit', 'saveUser', 'User was saved');
-                    this.leavePage();
-                })
-                .catch((err) => {
-                    this.errorStatus = true;
-                    this.errorMsg = err.message;
-                });
+                dispatchAction = 'addNewUser';
             }
+            this.$store.dispatch(dispatchAction, newUser)
+            .then(() => {
+                console.log('UserEdit', 'saveUser', 'User was saved');
+                this.leavePage();
+            })
+            .catch((err) => {
+                this.errorStatus = true;
+                this.errorMsg = err.message;
+            });
         },
         cancelUser() {
             console.log('UserEdit', 'cancelUser');
+            this.leavePage();
         },
         leavePage() {
             this.$router.push({ name: 'home' });
@@ -77,7 +83,15 @@ export default {
         }
     },
     created() {
-        console.log('UserEdit', this.edit);
+        console.log('UserEdit', this.edit, this.user);
+        if (this.edit) {
+            if (!this.user) {
+                console.error('UserEdit', 'Missing user props in edit mode!');
+                return;
+            }
+            this.editedUser.firstName = this.user.first_name;
+            this.editedUser.lastName  = this.user.last_name;
+        }
     }
 };
 </script>

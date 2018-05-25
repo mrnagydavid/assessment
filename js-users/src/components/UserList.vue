@@ -3,7 +3,9 @@
     <div class="row">
       <div class="col-4" style="margin: auto">
         <ul class="list-group">
-            <li v-for="user in listedUsers" :key="user.id" class="list-group-item">
+          <li v-for="user in listedUsers" :key="user.id" class="list-group-item">
+            <div class="row">
+              <div class="col-10">
                 {{ user.first_name | limit(15) }} {{ user.last_name | limit(15) }}
                 <br>
                 {{ user.created_at | date }}
@@ -18,8 +20,13 @@
                     Lock <span v-show="user.status === 'locked'">ON</span><span v-show="user.status !== 'locked'">OFF</span>
                   </label>
                 </div>
-            </li>
-        </ul>
+              </div>
+              <div class="col-2">
+                <button type="button" class="btn btn-light mr-2" @click="editUser(user.id)">Edit</button>
+              </div>
+            </div>
+          </li>
+        </ul>        
       </div>
     </div>
     <div class="row">
@@ -36,8 +43,6 @@
 
 <script>
 // @ is an alias to /src
-
-import { mapGetters } from 'vuex';
 
 const STEP_BY = 10;
 
@@ -69,6 +74,10 @@ export default {
     },
     changeStatus(id, value) {
       this.$store.dispatch('updateLockedStatus', { id, value });
+    },
+    editUser(id) {
+      console.log('UserList', 'editUser', id);
+      this.$router.push(`/edit/${id}`);
     }
   }
 };

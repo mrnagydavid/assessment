@@ -45,6 +45,19 @@ export default new Vuex.Store({
             }
             state.users.push(payload);
             console.log('store', 'mutations', 'appendUser', oldLen, '->', state.users.length)
+        },
+        updateUser(state, payload) {
+            console.log('store', 'mutations', 'updateUser', payload);
+            if (!payload || !payload.id) {
+                console.error('store', 'mutations', 'updateUser', 'No payload!');
+                return;
+            }
+            const user = state.users.find((user) => user.id === payload.id);
+            if (!user) {
+                console.error('store', 'mutations', 'updateUser', 'Didn`t find a matching user!');
+                return;
+            }
+            Object.assign(user, payload);
         }
     },
     actions: {
@@ -96,6 +109,22 @@ export default new Vuex.Store({
                 context.commit('appendUser', addedUser);
             })
             .catch((err) => console.error('store', 'actions', 'addNewUser', 'catch', err));
+        },
+        updateUser(context, payload) {
+            console.log('store', 'actions', 'updateUser', payload);
+            if (!payload || !payload.first_name || !payload.last_name) {
+                console.log('store', 'actions', 'updateUser', 'Missing fields in payload');
+                return;
+            }
+            const newUser = {
+                first_name: payload.first_name,
+                last_name: payload.last_name
+            };
+            return http.put(payload.url, newUser)
+            .then((response) => {
+                context.commit('updateUser', payload);
+            })
+            .catch((err) => console.error('store', 'actions', 'updateUser', 'catch', err));
         }
     }
 });
