@@ -4,7 +4,20 @@
       <div class="col-4" style="margin: auto">
         <ul class="list-group">
             <li v-for="user in listedUsers" :key="user.id" class="list-group-item">
-                {{ user.id }} {{ user.first_name | limit(10) }} {{ user.last_name | limit(10) }} {{ user.created_at | date }}
+                {{ user.first_name | limit(15) }} {{ user.last_name | limit(15) }}
+                <br>
+                {{ user.created_at | date }}
+                <br>
+                <div class="form-check">
+                  <input class="form-check-input" 
+                    type="checkbox"
+                    id="'statusCheck' + n"
+                    :checked="user.status === 'locked'"
+                    @change="changeStatus(user.id, $event.target.checked)">
+                  <label class="form-check-label" for="'statusCheck' + n">
+                    Lock <span v-show="user.status === 'locked'">ON</span><span v-show="user.status !== 'locked'">OFF</span>
+                  </label>
+                </div>
             </li>
         </ul>
       </div>
@@ -39,7 +52,9 @@ export default {
   computed: {
     listedUsers() {
       const startFrom = this.step * STEP_BY;
-      return this.users.slice(startFrom, startFrom + STEP_BY);
+      const upTo = startFrom + STEP_BY;
+      console.log('UserList', 'listedUsers', startFrom, upTo);
+      return this.users.slice(startFrom, upTo);
     },
     steps() {
       return Math.floor(this.users.length / STEP_BY);
@@ -47,9 +62,13 @@ export default {
   },
   methods: {
     changePage(nr) {
-      if (nr !== this.step && nr > 0 && nr < this.steps) {
+      console.log('UserList', 'changePage', nr);
+      if (nr !== this.step && nr >= 0 && nr < this.steps) {
         this.step = nr;
       }
+    },
+    changeStatus(id, value) {
+      this.$store.dispatch('updateLockedStatus', { id, value });
     }
   }
 };

@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-    <img src="../assets/logo.png">
     <UserList :users="users"></UserList>
   </div>
 </template>
