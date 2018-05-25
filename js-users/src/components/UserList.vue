@@ -62,7 +62,7 @@ export default {
       return this.users.slice(startFrom, upTo);
     },
     steps() {
-      return Math.floor(this.users.length / STEP_BY);
+      return Math.ceil(this.users.length / STEP_BY);
     }
   },
   methods: {
